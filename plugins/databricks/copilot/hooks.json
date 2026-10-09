@@ -4,16 +4,16 @@
     "SessionStart": [
       {
         "type": "command",
-        "bash": "python3 hooks/databricks-context.py",
-        "powershell": "python hooks/databricks-context.py"
+        "bash": "python3 \"${PLUGIN_ROOT}/hooks/databricks-context.py\"",
+        "powershell": "python \"$env:PLUGIN_ROOT/hooks/databricks-context.py\""
       }
     ],
     "PostToolUse": [
       {
         "type": "command",
         "matcher": "(?i)bash|shell|terminal",
-        "bash": "python3 hooks/databricks-auth-helper.py",
-        "powershell": "python hooks/databricks-auth-helper.py"
+        "bash": "python3 \"${PLUGIN_ROOT}/hooks/databricks-auth-helper.py\"",
+        "powershell": "python \"$env:PLUGIN_ROOT/hooks/databricks-auth-helper.py\""
       }
     ]
   }

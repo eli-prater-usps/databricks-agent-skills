@@ -82,6 +82,22 @@ class GeneratedHooksTest(unittest.TestCase):
         self.assertEqual(skills.build_copilot_hooks(self.meta)["version"], 1)
         self.assertEqual(skills.build_cursor_hooks(self.meta)["version"], 1)
 
+    def test_copilot_hooks_use_shell_specific_plugin_roots(self):
+        hooks = skills.build_copilot_hooks(self.meta)["hooks"]
+        for event, script in (
+            ("SessionStart", "databricks-context.py"),
+            ("PostToolUse", "databricks-auth-helper.py"),
+        ):
+            with self.subTest(event=event):
+                self.assertEqual(
+                    hooks[event][0]["bash"],
+                    f'python3 "${{PLUGIN_ROOT}}/hooks/{script}"',
+                )
+                self.assertEqual(
+                    hooks[event][0]["powershell"],
+                    f'python "$env:PLUGIN_ROOT/hooks/{script}"',
+                )
+
     def test_no_plugin_declares_hooks(self):
         # Each per-provider bundle ships its wiring as hooks/hooks.json, which the
         # agent auto-discovers from the plugin root, so no plugin.json declares a

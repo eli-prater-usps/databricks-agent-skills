@@ -68,15 +68,22 @@ Copilot folder's root `hooks.json`, which Copilot-format plugins auto-discover
 (no `"hooks"` declaration). It uses PascalCase event names, which selects
 Copilot's Claude-compatible payload dialect, so the scripts run unchanged and
 emit the Claude output envelope. Only two hooks are wired: the context primer
-(`SessionStart`) and the auth hinter (`PostToolUse`). Copilot's hooks run on the
-Copilot CLI and the cloud agent (VS Code ships its own separate hooks system);
-the CLI injects `SessionStart` / `PostToolUse` `additionalContext` as of Copilot
+(`SessionStart`) and the auth hinter (`PostToolUse`). Plugin hooks run in the
+Copilot CLI and VS Code; the cloud agent only loads repository-vendored hooks.
+The CLI injects `SessionStart` / `PostToolUse` `additionalContext` as of Copilot
 CLI v1.0.11 (earlier versions dropped session-start output).
 The prompt router is not wired: no Copilot surface lets a prompt-submit hook
 inject context (`userPromptSubmitted` output is not processed), so routing rides
 on skill descriptions and instruction files.
 Each entry carries `bash` and `powershell` command variants per Copilot's hook
-format.
+format. Script paths use the plugin's `PLUGIN_ROOT`, with
+`${PLUGIN_ROOT}` in Bash and `$env:PLUGIN_ROOT` in PowerShell,
+and are quoted to support installation paths containing spaces. They do not
+depend on the open workspace's working directory or a hard-coded global install
+location. VS Code supplies this root for
+[Copilot-format plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins#_plugin-environment-variables).
+When running this wiring outside a plugin host (for example, vendoring it into
+a repository), set `PLUGIN_ROOT` to the directory containing `hooks/`.
 
 `codex-hooks.json` is the Codex-dialect wiring; the bundle ships it as the Codex
 folder's `hooks/hooks.json`, Codex's default plugin hook file, which it

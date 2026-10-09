@@ -71,7 +71,7 @@ def build_nested_hooks(meta: dict, target_key: str) -> dict:
 
 def build_copilot_hooks(meta: dict) -> dict:
     """Copilot dialect: version 1, flat entries with bash/powershell variants,
-    PascalCase events, repo-relative paths, no router.
+    PascalCase events, plugin-rooted paths, no router.
     """
     render = meta["targets"]["copilot"]["hooks_render"]
     scripts = _hook_scripts(meta)
@@ -80,8 +80,8 @@ def build_copilot_hooks(meta: dict) -> dict:
         item: dict = {"type": "command"}
         if matcher is not None:
             item["matcher"] = matcher
-        item["bash"] = f"python3 hooks/{script}"
-        item["powershell"] = f"python hooks/{script}"
+        item["bash"] = f'python3 "{render["env_root"]}/hooks/{script}"'
+        item["powershell"] = f'python "{render["powershell_env_root"]}/hooks/{script}"'
         return item
 
     return {

@@ -64,6 +64,8 @@
       "hooks_render": {
         "out": "hooks/copilot-hooks.json",
         "dialect": "copilot",
+        "env_root": "${PLUGIN_ROOT}",
+        "powershell_env_root": "$env:PLUGIN_ROOT",
         "tool_matcher": "(?i)bash|shell|terminal"
       }
     },
